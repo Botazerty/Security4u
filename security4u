@@ -1,0 +1,1137 @@
+#!/usr/bin/env bash
+
+
+function menu_reconnaissance {
+clear
+printf "\e[1;1m  \n"
+printf "\n"	
+printf "	______                                 _                               \n"
+printf "	| ___ \                               (_)                              \n"
+printf "	| |_/ /___  ___ ___  _ __  _ __   __ _ _ ___ ___  __ _ _ __   ___ ___  \n"
+printf "	|    // _ \/ __/ _ \|  _ \|  _ \ / _  | / __/ __|/ _  |  _ \ / __/ _ \ \n"
+printf "	| |\ \  __/ (_| (_) | | | | | | | (_| | \__ \__ \ (_| | | | | (_|  __/ \n"
+printf "	\_| \_\___|\___\___/|_| |_|_| |_|\__,_|_|___/___/\__,_|_| |_|\___\___| \n"
+printf "\n"
+printf "          		\e[1;31m.:.\e[0m\e[1;34m Coded by\e[0m\e[1;34m  @Ilan_&_Hocine \e[1;31m.:.\e[0m\n"
+printf "\n"   
+
+printf "\e[1;34m[\e[0m\e[1;1m01\e[0m\e[1;34m]\e[0m\e[1;31m Sublister   ---Enumerate sub-domains of websites\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m02\e[0m\e[1;34m]\e[0m\e[1;31m DNS Dump    ---Find & lookup DNS\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m03\e[0m\e[1;34m]\e[0m\e[1;31m SpiderShell   ---Check all accesible link of website\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m04\e[0m\e[1;34m]\e[0m\e[1;31m Dirb     ---Access test with Wordlist\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m05\e[0m\e[1;34m]\e[0m\e[1;31m Linkedin search  ---Take all email of a company\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m06\e[0m\e[1;34m]\e[0m\e[1;31m Mail Checker\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m07\e[0m\e[1;34m]\e[0m\e[1;31m Phone Checker\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m08\e[0m\e[1;34m]\e[0m\e[1;31m Search Cloud  ---Search accesible link of company in all Cloud \e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m09\e[0m\e[1;34m]\e[0m\e[1;31m TheHarvester\e[0m\n"
+printf "\n"
+printf "\e[1;34m[\e[0m\e[1;1m99\e[0m\e[1;34m]\e[0m\e[1;1m Back\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option_multi
+if [[ $option_multi == 1 || $option_multi == 01 ]]; then
+read -p $'\e[1;1m[*] Target :\e[0m\e[1;1m ' target
+cd /home/user/security4u/tools/reconnaissance/Sublist3r
+python3 sublist3r.py -d "$target"
+sleep 0.5
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_reconnaissance
+elif [[ $option_multi == 2 || $option_multi == 02 ]]; then
+menu_dnsdump
+elif [[ $option_multi == 3 || $option_multi == 03 ]]; then
+menu_spidershell
+elif [[ $option_multi == 4 || $option_multi == 04 ]]; then
+read -p $'\e[1;1m[*] Target :\e[0m\e[1;1m ' target
+read -p $'\e[1;1m[*] wordlist path (default:common.txt) :\e[0m\e[1;1m ' target2
+dirb $target $target2
+elif [[ $option_multi == 5 || $option_multi == 05 ]]; then
+read -p $'\e[1;1m[*] Target :\e[0m\e[1;1m ' target
+cd /home/user/security4u/tools/reconnaissance/linked
+python3 linkedmail.py -f '{first}.{last}@domain.com' "$target"
+for i in *.txt ; do
+   (mv $i /home/user/security4u/$projet 2>/dev/null)
+done
+read -n 1 -s -r -p $' Press key for go back main menu '
+elif [[ $option_multi == 6 || $option_multi == 06 ]]; then
+menu_mailcheck
+elif [[ $option_multi == 7 || $option_multi == 07 ]]; then
+menu_phone
+elif [[ $option_multi == 8 || $option_multi == 08 ]]; then
+read -p $'\e[1;1m[*] Target :\e[0m\e[1;1m ' target
+cd /home/user/security4u/tools/reconnaissance/SearchCloud/
+./cloud_enum.py -k "$target"
+elif [[ $option_multi == 9 || $option_multi == 09 ]]; then
+menu_harvester
+elif [[ $option_multi == 99 ]]; then
+clear
+menu_choix1
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 0.5
+clear
+menu_reconnaissance
+fi
+}
+
+
+function menu_cartographie {
+clear
+
+printf "\e[1;77m  \n"
+printf "\n"
+printf " 	 __  __                   _             \n"
+printf "	|  \/  |                 (_)            \n"
+printf "	| \  / | __ _ _ __  _ __  _ _ __   __ _ \n"
+printf "	| |\/| |/ _  |  _ \|  _ \| |  _ \ / _  |\n"
+printf "	| |  | | (_| | |_) | |_) | | | | | (_| |\n"
+printf "	|_|  |_|\__,_| .__/| .__/|_|_| |_|\__, |\n"
+printf "	             | |   | |             __/ |\n"
+printf "	             |_|   |_|            |___/ \n"	
+printf "\n"
+printf "            \e[1;31m.:.\e[0m\e[1;34m Coded by\e[0m\e[1;34m  @Ilan_&_Hocine \e[1;31m.:.\e[0m\n"
+printf "\n"
+
+printf "\e[1;34m[\e[0m\e[1;1m01\e[0m\e[1;34m]\e[0m\e[1;31m NMAP\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m02\e[0m\e[1;34m]\e[0m\e[1;31m SQLMAP\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m03\e[0m\e[1;34m]\e[0m\e[1;31m GrennBone\e[0m\n"
+printf "\n"
+printf "\e[1;34m[\e[0m\e[1;1m99\e[0m\e[1;34m]\e[0m\e[1;1m Back\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option_multi
+
+if [[ $option_multi == 1 || $option_multi == 01 ]]; then
+menu_nmap
+elif [[ $option_multi == 2 || $option_multi == 02 ]]; then
+read -p $'\e[1;1m[*] Target :\e[0m\e[1;1m ' "target"
+read -p $'\e[1;1m[*] Option of SQLMAP (skip for nothing) :\e[0m\e[1;1m ' "target2"
+sqlmap $target -$target2
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cartographie
+elif [[ $option_multi == 3 || $option_multi == 03 ]]; then
+docker start e39ce91691fa3f3b2a1be0dd1c2ee39399c3ed441fb5cac2bdff29f3d4946cd8
+sleep 1
+firefox 127.0.0.1
+read -n 1 -s -r -p $' Press key for go back main menu '
+elif [[ $option_multi == 99 ]]; then
+clear
+menu_choix1
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 0.5
+clear
+menu_cartographie
+fi
+}
+
+
+
+function menu_recherche {
+clear
+
+printf "\e[1;77m  \n"
+printf "\n"
+printf "		__      __    _                      _     _ _ _ _         "\n"
+printf "		\ \    / /   | |                    | |   (_) (_) |        "\n"
+printf "		 \ \  / /   _| |_ __   ___ _ __ __ _| |__  _| |_| |_ _   _  "\n"
+printf "		  \ \/ / | | | |  _ \ / _ \  __/ _  |  _ \| | | | __| | | | "\n"
+printf "		   \  /| |_| | | | | |  __/ | | (_| | |_) | | | | |_| |_| | "\n"
+printf "		    \/  \__,_|_|_| |_|\___|_|  \__,_|_.__/|_|_|_|\__|\__, | "\n"
+printf "		                                                      __/ | "\n"                                  
+printf "		                 _____                      _        |___/  "\n"      	     
+printf "				/ ____|                    | |              "\n"
+printf "				| (___   ___  __ _ _ __ ___| |__            "\n"
+printf "				 \___ \ / _ \/ _  |  __/ __|  _ \           "\n"
+printf "				 ____) |  __/ (_| | | | (__| | | |           "\n"
+printf "				|_____/ \___|\__,_|_|  \___|_| |_|           "\n"
+printf "                               		                                      "\n"                                                    
+printf "\n"
+printf "          		\e[1;31m.:.\e[0m\e[1;34m Coded by\e[0m\e[1;34m  @Ilan_&_Hocine \e[1;31m.:.\e[0m\n"
+printf "\n"  
+
+printf "\e[1;34m[\e[0m\e[1;1m01\e[0m\e[1;34m]\e[0m\e[1;31m MittreAtt&ck\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m02\e[0m\e[1;34m]\e[0m\e[1;31m SearchDorks   ---Search accesible link and check DB error\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m03\e[0m\e[1;34m]\e[0m\e[1;31m DorksScan+   ---Enumerate web-sites using google dorks\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m04\e[0m\e[1;34m]\e[0m\e[1;31m Nikto\e[0m\n"
+printf "\n"
+printf "\e[1;34m[\e[0m\e[1;1m99\e[0m\e[1;34m]\e[0m\e[1;1m Back\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option_multi
+
+if [[ $option_multi == 1 || $option_multi == 01 ]]; then
+menu_mitre
+elif [[ $option_multi == 2 || $option_multi == 02 ]]; then
+menu_dorks
+elif [[ $option_multi == 3 || $option_multi == 03 ]]; then
+read -p $'\e[1;1m[*] Choose an target:\e[0m\e[1;1m ' "target" 
+menu_dorks+ $target
+read -n 1 -s -r -p $' Press key for go back main menu '
+elif [[ $option_multi == 4 || $option_multi == 04 ]]; then
+read -p $'\e[1;1m[*] Ip/Site :\e[0m\e[1;1m ' "option1"
+read -p $'\e[1;1m[*] Port (default80) :\e[0m\e[1;1m ' "option2"
+nikto -h $option1 -p $option2
+read -n 1 -s -r -p $' Press key for go back main menu '
+elif [[ $option_multi == 99 ]]; then
+clear
+menu_choix1
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 0.5
+clear
+menu_recherche
+fi
+}
+
+
+
+function menu_exploitation {
+clear
+
+printf "\e[1;77m  \n"
+printf "\n"
+printf "	 _____           _       _ _        _   _             \n"
+printf "	|  ___|         | |     (_) |      | | (_)            \n"
+printf "	| |____  ___ __ | | ___  _| |_ __ _| |_ _  ___  _ __  \n"
+printf "	|  __\ \/ /  _ \| |/ _ \| | __/ _  | __| |/ _ \|  _ \ \n"
+printf "	| |___>  <| |_) | | (_) | | || (_| | |_| | (_) | | | |\n"
+printf "	\____/_/\_\ .__/|_|\___/|_|\__\__,_|\__|_|\___/|_| |_|\n"
+printf "	          | |                                         \n"
+printf "	          |_|                                         \n"
+printf "\n"
+printf "          	\e[1;31m.:.\e[0m\e[1;34m Coded by\e[0m\e[1;34m  @Ilan_&_Hocine \e[1;31m.:.\e[0m\n"
+printf "\n"
+
+printf "\e[1;34m[\e[0m\e[1;1m01\e[0m\e[1;34m]\e[0m\e[1;31m Searchsploit  ---Search vulnerability\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m02\e[0m\e[1;34m]\e[0m\e[1;31m Generateur PayLoad\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m03\e[0m\e[1;34m]\e[0m\e[1;31m Phishing\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m04\e[0m\e[1;34m]\e[0m\e[1;31m Wifi Attck\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m05\e[0m\e[1;34m]\e[0m\e[1;31m John the Ripper\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m06\e[0m\e[1;34m]\e[0m\e[1;31m Social Exploit  ---Social-Engineering Attacks\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m07\e[0m\e[1;34m]\e[0m\e[1;31m Spammer email/discord - DDOS\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m08\e[0m\e[1;34m]\e[0m\e[1;31m WordList Password Generator\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m09\e[0m\e[1;34m]\e[0m\e[1;31m WordList Password custom Generator\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m10\e[0m\e[1;34m]\e[0m\e[1;31m Hydra \e[0m\n"
+printf "\n"
+printf "\e[1;34m[\e[0m\e[1;1m99\e[0m\e[1;34m]\e[0m\e[1;1m Back\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option_multi
+
+if [[ $option_multi == 1 || $option_multi == 01 ]]; then
+read -p $'\e[1;1m[*] Target :\e[0m\e[1;1m ' "target"
+searchsploit "$target"
+sleep 10 
+clear
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+elif [[ $option_multi == 2 || $option_multi == 02 ]]; then
+cd /home/user/security4u/tools/exploitation/zirikatu/
+bash zirikatu.sh
+cd /home/user/security4u/tools/exploitation/zirikatu/output
+for i in *.exe ; do
+   (mv $i /home/user/security4u/$projet 2>/dev/null)
+done
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+elif [[ $option_multi == 3 || $option_multi == 03 ]]; then
+cd /home/user/security4u/tools/exploitation/phishing/
+bash phishing.sh
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+elif [[ $option_multi == 4 || $option_multi == 04 ]]; then
+cd /home/user/security4u/tools/exploitation/fluxion
+./fluxion.sh
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+elif [[ $option_multi == 5 || $option_multi == 05 ]]; then
+menu_john
+elif [[ $option_multi == 6 || $option_multi == 06 ]]; then
+cd /home/user/security4u/tools/exploitation/social-engineer-toolkit/
+python3 setoolkit
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+elif [[ $option_multi == 7 || $option_multi == 07 ]]; then
+cd /home/user/security4u/tools/exploitation/Beast_Bomber/
+python3 start.py
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+elif [[ $option_multi == 8 || $option_multi == 08 ]]; then
+cd /home/user/security4u/tools/exploitation/WordlistPasswordGenerator/
+python3 OnlineHackingPassswdList.py
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+elif [[ $option_multi == 9 || $option_multi == 09 ]]; then
+cd /home/user/security4u/tools/exploitation/cupp
+python3 cupp.py -i
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+elif [[ $option_multi == 10 || $option_multi == 10 ]]; then
+menu_hydra
+elif [[ $option_multi == 99 ]]; then
+clear
+menu_choix1
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 0.5
+clear
+menu_exploitation
+fi
+}
+
+function menu_cleanup {
+clear
+
+printf "\e[1;77m  \n"
+printf "\n"
+printf "	 _____ _                  _   _       \n"
+printf "	/  __ \ |                | | | |      \n"
+printf "	| /  \/ | ___  __ _ _ __ | | | |_ __  \n"
+printf "	| |   | |/ _ \/ _  |  _ \| | | |  _ \ \n"
+printf "	| \__/\ |  __/ (_| | | | | |_| | |_) |\n"
+printf "	 \____/_|\___|\__,_|_| |_|\___/| .__/ \n"
+printf "	                               | |    \n"
+printf "	                               |_|    \n"
+printf "\n"
+printf "          \e[1;31m.:.\e[0m\e[1;34m Coded by\e[0m\e[1;34m  @Ilan_&_Hocine \e[1;31m.:.\e[0m\n"
+printf "\n"
+
+printf "\e[1;34m[\e[0m\e[1;1m01\e[0m\e[1;34m]\e[0m\e[1;31m Start Tor Proxy\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m02\e[0m\e[1;34m]\e[0m\e[1;31m Stop Tor proxy\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m03\e[0m\e[1;34m]\e[0m\e[1;31m Change Mac Address\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m04\e[0m\e[1;34m]\e[0m\e[1;31m Remove logs/history and change hostname\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m05\e[0m\e[1;34m]\e[0m\e[1;31m Switch IP tor\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m06\e[0m\e[1;34m]\e[0m\e[1;31m Block connexion tor\e[0m\n"
+
+printf "\n"
+printf "\e[1;34m[\e[0m\e[1;1m99\e[0m\e[1;34m]\e[0m\e[1;31m Back\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option_multi
+
+if [[ $option_multi == 1 || $option_multi == 01 ]]; then
+cd /home/user/security4u/tools/cleanup/AnonScript/
+bash AnonScript.sh --tor
+sleep 3
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+elif [[ $option_multi == 2 || $option_multi == 02 ]]; then
+cd /home/user/security4u/tools/cleanup/AnonScript/
+bash AnonScript.sh --clearnet
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+elif [[ $option_multi == 3 || $option_multi == 03 ]]; then
+cd /home/user/security4u/tools/cleanup/AnonScript/
+bash AnonScript.sh --mac
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+elif [[ $option_multi == 4 || $option_multi == 04 ]]; then
+cd /home/user/security4u/tools/cleanup/AnonScript/
+bash AnonScript.sh --logs
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+elif [[ $option_multi == 5 || $option_multi == 05 ]]; then
+cd /home/user/security4u/tools/cleanup/tor/vpntor
+bash switchtor
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+elif [[ $option_multi == 6 || $option_multi == 06 ]]; then
+menu_blockco
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+elif [[ $option_multi == 99 ]]; then
+clear
+menu_choix1
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 0.5
+clear
+menu_cleanup
+fi
+}
+
+
+function menu_harvester {
+read -p $'\e[1;1m Choose an target:\e[0m\e[1;1m ' target
+read -p $'\e[1;1m Choose an option for max range (default:200):\e[0m\e[1;1m ' target2
+	cat <<-EOF
+
+		${RED} ${ORANGE} Selectionner votre source de recherche ${RED} ${ORANGE}
+
+${RED}[${WHITE}01${RED}]${ORANGE} Anubis     		${RED}[${WHITE}14${RED}]${ORANGE} Google       			${RED}[${WHITE}27${RED}]${ORANGE} Rocketreach
+${RED}[${WHITE}02${RED}]${ORANGE} Baidu     			${RED}[${WHITE}15${RED}]${ORANGE} Hackertarget    			${RED}[${WHITE}28${RED}]${ORANGE} SecurityTrails
+${RED}[${WHITE}03${RED}]${ORANGE} Bing       		${RED}[${WHITE}16${RED}]${ORANGE} Hunter     			${RED}[${WHITE}29${RED}]${ORANGE} Spyse
+${RED}[${WHITE}04${RED}]${ORANGE} Binaryedge 		${RED}[${WHITE}17${RED}]${ORANGE} Intelx     			${RED}[${WHITE}30${RED}]${ORANGE} Sublist3r	
+${RED}[${WHITE}05${RED}]${ORANGE} Bingapi    		${RED}[${WHITE}18${RED}]${ORANGE} Iinkedin        			${RED}[${WHITE}31${RED}]${ORANGE} Threatcrowd		
+${RED}[${WHITE}06${RED}]${ORANGE} Bufferoverun  		${RED}[${WHITE}19${RED}]${ORANGE} Iinkedin_links    			${RED}[${WHITE}32${RED}]${ORANGE} Threatminer
+${RED}[${WHITE}07${RED}]${ORANGE} Censys        		${RED}[${WHITE}20${RED}]${ORANGE} N45ht   				${RED}[${WHITE}33${RED}]${ORANGE} Trello			
+${RED}[${WHITE}08${RED}]${ORANGE} Certspotter   		${RED}[${WHITE}21${RED}]${ORANGE} Omnisint     			${RED}[${WHITE}34${RED}]${ORANGE} Twitter
+${RED}[${WHITE}09${RED}]${ORANGE} Crtsh   			${RED}[${WHITE}22${RED}]${ORANGE} Otx       				${RED}[${WHITE}35${RED}]${ORANGE} Urlscan
+${RED}[${WHITE}10${RED}]${ORANGE} Dnsdumpster   		${RED}[${WHITE}23${RED}]${ORANGE} Pentesttools      			${RED}[${WHITE}36${RED}]${ORANGE} Virustotal
+${RED}[${WHITE}11${RED}]${ORANGE} Duckduckgo    		${RED}[${WHITE}24${RED}]${ORANGE} Projectdiscovery  			${RED}[${WHITE}37${RED}]${ORANGE} Yahoo
+${RED}[${WHITE}12${RED}]${ORANGE} Fullhunt			${RED}[${WHITE}25${RED}]${ORANGE} Qwant	   			${RED}[${WHITE}38${RED}]${ORANGE} Zoomeye
+${RED}[${WHITE}13${RED}]${ORANGE} Github-code		${RED}[${WHITE}26${RED}]${ORANGE} Rapiddns	   			${RED}[${WHITE}39${RED}]${ORANGE} All
+		
+	EOF
+
+read -p $'\e[1;1m[*] Choose an source option:\e[0m\e[1;1m ' option
+if [[ $option == 1 || $option == 01 ]]; then
+	theHarvester -d $target -l $target2 -b anubis 
+elif [[ $option == 2 || $option == 02 ]]; then
+	theHarvester -d $target -l $target2 -b baidu 
+elif [[ $option == 3 || $option == 03 ]]; then
+	theHarvester -d $target -l $target2 -b bing 
+elif [[ $option == 4 || $option == 04 ]]; then
+	theHarvester -d $target -l $target2 -b binaryedge 
+elif [[ $option == 5 || $option == 05 ]]; then
+	theHarvester -d $target -l $target2 -b bingapi 
+elif [[ $option == 6 || $option == 06 ]]; then
+	theHarvester -d $target -l $target2 -b bufferoverun 
+elif [[ $option == 7 || $option == 07 ]]; then
+	theHarvester -d $target -l $target2 -b censys 
+elif [[ $option == 8 || $option == 08 ]]; then
+	theHarvester -d $target -l $target2 -b certspotter 
+elif [[ $option == 9 || $option == 09 ]]; then
+	theHarvester -d $target -l $target2 -b crtsh 
+elif [[ $option == 10 ]]; then
+	theHarvester -d $target -l $target2 -b dnsdumpster 
+elif [[ $option == 11 ]]; then
+	theHarvester -d $target -l $target2 -b duckduckgo 
+elif [[ $option == 12 ]]; then
+	theHarvester -d $target -l $target2 -b fullhunt 
+elif [[ $option == 13 ]]; then
+	theHarvester -d $target -l $target2 -b github-code 
+elif [[ $option == 14 ]]; then
+	theHarvester -d $target -l $target2 -b google 
+elif [[ $option == 15 ]]; then              
+	theHarvester -d $target -l $target2 -b hackertarget 
+elif [[ $option == 16 ]]; then              
+	theHarvester -d $target -l $target2 -b hunter 
+elif [[ $option == 17 ]]; then              
+	theHarvester -d $target -l $target2 -b intelx 
+elif [[ $option == 18 ]]; then              
+	theHarvester -d $target -l $target2 -b linkedin 
+elif [[ $option == 19 ]]; then              
+	theHarvester -d $target -l $target2 -b linkedin_links 
+elif [[ $option == 20 ]]; then              
+	theHarvester -d $target -l $target2 -b n45ht 
+elif [[ $option == 21 ]]; then              
+	theHarvester -d $target -l $target2 -b omnisint 
+elif [[ $option == 22 ]]; then              
+	theHarvester -d $target -l $target2 -b otx 
+elif [[ $option == 23 ]]; then              
+	theHarvester -d $target -l $target2 -b pentesttools 
+elif [[ $option == 24 ]]; then              
+	theHarvester -d $target -l $target2 -b projectdiscovery 
+elif [[ $option == 25 ]]; then              
+	theHarvester -d $target -l $target2 -b qwant 
+elif [[ $option == 26 ]]; then              
+	theHarvester -d $target -l $target2 -b rapiddns 
+elif [[ $option == 27 ]]; then              
+	theHarvester -d $target -l $target2 -b rocketreach 
+elif [[ $option == 28 ]]; then              
+	theHarvester -d $target -l $target2 -b securityTrails 
+elif [[ $option == 29 ]]; then              
+	theHarvester -d $target -l $target2 -b spyse 
+elif [[ $option == 30 ]]; then              
+	theHarvester -d $target -l $target2 -b sublist3r 
+elif [[ $option == 31 ]]; then              
+	theHarvester -d $target -l $target2 -b threatcrowd 
+elif [[ $option == 32 ]]; then              
+	theHarvester -d $target -l $target2 -b threatminer 
+elif [[ $option == 33 ]]; then              
+	theHarvester -d $target -l $target2 -b trello 
+elif [[ $option == 34 ]]; then              
+	theHarvester -d $target -l $target2 -b twitter 
+elif [[ $option == 35 ]]; then              
+	theHarvester -d $target -l $target2 -b urlscan 
+elif [[ $option == 36 ]]; then              
+	theHarvester -d $target -l $target2 -b virustotal 
+elif [[ $option == 37 ]]; then              
+	theHarvester -d $target -l $target2 -b yahoo 
+elif [[ $option == 38 ]]; then
+	theHarvester -d $target -l $target2 -b zoomeye 	
+elif [[ $option == 39 ]]; then
+	theHarvester -d $target -l $target2 -b all  
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 3
+menu_reconnaissance
+fi 
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_reconnaissance
+}
+
+function menu_dorks+ {
+# A script to enumerate web-sites using google dorks
+# Author: Ivan Glinkin
+
+
+example_domain="megacorp.one" 				## Example domain
+sleeptime=6									## Delay between queries, in seconds
+domain=$1 									## Get the domain
+browser='Mozilla'	## Browser information for curl
+gsite="site:$domain" 						## Google Site
+
+lpadmin="inurl:admin"
+lplogin="inurl:login"
+lpadminlogin="inurl:adminlogin"
+lpcplogin="inurl:cplogin"
+lpweblogin="inurl:weblogin"
+lpquicklogin="inurl:quicklogin"
+lpwp1="inurl:wp-admin"
+lpwp2="inurl:wp-login"
+lpportal="inurl:portal"
+lpuserportal="inurl:userportal"
+lploginpanel="inurl:loginpanel"
+lpmemberlogin="inurl:memberlogin"
+lpremote="inurl:remote"
+lpdashboard="inurl:dashboard"
+lpauth="inurl:auth"
+lpexc="inurl:exchange"
+lpfp="inurl:ForgotPassword"
+lptest="inurl:test"
+loginpagearray=($lpadmin $lplogin $lpadminlogin $lpcplogin $lpweblogin $lpquicklogin $lpwp1 $lpwp2 $lpportal $lpuserportal $lploginpanel $memberlogin $lpremote $lpdashboard $lpauth $lpexc $lpfp $lptest)
+
+ftdoc="filetype:doc"						## Filetype DOC (MsWord 97-2003)
+ftdocx="filetype:docx"						## Filetype DOCX (MsWord 2007+)
+ftxls="filetype:xls"						## Filetype XLS (MsExcel 97-2003)
+ftxlsx="filetype:xlsx"						## Filetype XLSX (MsExcel 2007+)
+ftppt="filetype:ppt"						## Filetype PPT (MsPowerPoint 97-2003)
+ftpptx="filetype:pptx"						## Filetype PPTX (MsPowerPoint 2007+)
+ftmdb="filetype:mdb"						## Filetype MDB (Ms Access)
+ftpdf="filetype:pdf"						## Filetype PDF
+ftsql="filetype:sql"						## Filetype SQL
+fttxt="filetype:txt"						## Filetype TXT
+ftrtf="filetype:rtf"						## Filetype RTF
+ftcsv="filetype:csv"						## Filetype CSV
+ftxml="filetype:xml"						## Filetype XML
+ftconf="filetype:conf"						## Filetype CONF
+ftdat="filetype:dat"						## Filetype DAT
+ftini="filetype:ini"						## Filetype INI
+ftlog="filetype:log"						## Filetype LOG
+ftidrsa="index%20of:id_rsa%20id_rsa.pub"	## File ID_RSA
+filetypesarray=($ftdoc $ftdocx $ftxls $ftxlsx $ftppt $ftpptx $ftmdb $ftpdf $ftsql $fttxt $ftrtf $ftcsv $ftxml $ftconf $ftdat $ftini $ftlog $ftidrsa)
+
+
+dtparent='intitle:%22index%20of%22%20%22parent%20directory%22' 	## Common traversal
+dtdcim='intitle:%22index%20of%22%20%22DCIM%22' 					## Photo
+dtftp='intitle:%22index%20of%22%20%22ftp%22' 					## FTP
+dtbackup='intitle:%22index%20of%22%20%22backup%22'				## BackUp
+dtmail='intitle:%22index%20of%22%20%22mail%22'					## Mail
+dtpassword='intitle:%22index%20of%22%20%22password%22'			## Password
+dtpub='intitle:%22index%20of%22%20%22pub%22'					## Pub
+dirtravarray=($dtparent $dtdcim $dtftp $dtbackup $dtmail $dtpassword $dtpub)
+
+
+echo -e "\n\e[00;33m#########################################################\e[00m"
+echo -e "\e[00;33m#                                                       #\e[00m" 
+echo -e "\e[00;33m#\e[00m" "\e[01;32m               Dorks Scan +               \e[00m" "\e[00;33m#\e[00m"
+echo -e "\e[00;33m#                                                       #\e[00m" 
+echo -e "\e[00;33m#########################################################\e[00m"
+
+
+	if [ -z "$domain" ] 
+	then
+		echo -e "\e[00;33m# Usage example:\e[00m" "\e[01;31m$0 $example_domain \e[00m\n"
+		exit
+	else
+			echo -e "\e[00;33m# Get information about:   \e[00m" "\e[01;31m$domain\e[00m"
+			echo -e "\e[00;33m# Delay between queries:   \e[00m" "\e[01;31m$sleeptime\e[00m" "\e[00;33msec\e[00m\n"
+	fi
+
+function Query {
+		result="";
+		for start in `seq 0 10 40`; ##### Last number - quantity of possible answers
+			do
+				query=$(echo; curl -sS -b "CONSENT=YES+srp.gws-20211028-0-RC2.es+FX+330" -A $browser "https://www.google.com/search?q=$gsite%20$1&start=$start&client=firefox-b-e")
+
+				checkban=$(echo $query | grep -io "https://www.google.com/sorry/index")
+				if [ "$checkban" == "https://www.google.com/sorry/index" ]
+				then 
+					echo -e "Google thinks you are the robot and has banned you;) How dare he? So, you have to wait some time to unban or change your ip!"; 
+					exit;
+				fi
+				
+				checkdata=$(echo $query | grep -Eo "(http|https)://[a-zA-Z0-9./?=_~-]*$domain/[a-zA-Z0-9./?=_~-]*")
+				if [ -z "$checkdata" ]
+					then
+						sleep $sleeptime; # Sleep to prevent banning
+						break; # Exit the loop
+					else
+						result+="$checkdata ";
+						sleep $sleeptime; # Sleep to prevent banning
+				fi
+			done
+
+		
+		if [ -z "$result" ] 
+			then
+				echo -e "\e[00;33m[\e[00m\e[01;31m-\e[00m\e[00;33m]\e[00m No results"
+			else
+				IFS=$'\n' sorted=($(sort -u <<<"${result[@]}" | tr " " "\n")) # Sort the results with unique key
+				echo -e " "
+				for each in "${sorted[@]}"; do echo -e "     \e[00;33m[\e[00m\e[01;32m+\e[00m\e[00;33m]\e[00m $each"; done
+		fi
+
+		### Unset variables
+		unset IFS sorted result checkdata checkban query
+}
+
+
+function PrintTheResults {
+	for dirtrav in $@; 
+		do echo -en "\e[00;33m[\e[00m\e[01;31m*\e[00m\e[00;33m]\e[00m" Checking $(echo $dirtrav | cut -d ":" -f 2 | tr '[:lower:]' '[:upper:]' | sed "s@+@ @g;s@%@\\\\x@g" | xargs -0 printf "%b") "\t" 
+		Query $dirtrav 
+	done
+echo " "
+}
+
+echo -e "\e[01;32mChecking Login Page:\e[00m"; PrintTheResults "${loginpagearray[@]}";
+echo -e "\e[01;32mChecking specific files:\e[00m"; PrintTheResults "${filetypesarray[@]}";
+echo -e "\e[01;32mChecking path traversal:\e[00m"; PrintTheResults "${dirtravarray[@]}";
+
+}
+
+function menu_dorks {
+checksqli() {
+for url in $(cat searchdork.txt); do
+printf "\e[1;93mScanning:\e[0m\e[77m %s\e[0m\n" $url
+checkurl=$(curl -s "$url" | grep -o 'SQL syntax\|mysql_fetch_assoc\|mysql_fetch_array\|mysql_num_rows\|is_writable\|mysql_result\|pg_exec\|mysql_query\|pg_query\|System Error\|io_error\|privilege_not_granted\|getimagesize\|preg_match\|DB Error'; echo $?)
+if [[ $checkurk == 0 ]]; then
+printf "\e[1;92m [*] Possible Vulnerable target:\e[1;77m %s\ne[0m" $url
+fi
+done
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_recherche
+}
+
+page=0
+#domains=(ac ad ae af ag ai al am an ao aq ar as at au aw ax az ba bb bd be bf bg bh bi bj bm bn bo br bs bt bv bw by bz ca cc cd cf cg ch ci ck cl cm cn co cr cu cv cx cv cz de dj dk dm do dz ec ee eg eh er es et eu fi fj fk fm fo fr ga gb gd ge gf gg gh )
+read -p $'\e[1;92m[*] Dork: \e[0m' dork
+printf "\e[1;92m[*] Searching targets, please wait...\e[0m\n"
+
+pages=100
+while [[ $page -lt $pages ]]; do
+#for domain in ${domains[@]}; do
+curl -s 'https://www.bing.com/search?q='$dork'&first='$page'&FORM=PORE' >> file1
+let page+=10
+#done
+done
+grep -o 'href="http[^"]*"' file1 > file2
+sed -i '/microsoft/d' ./file2
+sed -i '/wordpress/d' ./file2
+sed -i '/bing/d' ./file2
+cat file2 | sort | uniq | cut -d "\"" -f2 | tr -d '\"' > searchdork.txt
+printf "\e[1;92m[*] Results:\n\e[0m\e[1;77m"
+cat searchdork.txt
+printf "\e[0m\n"
+printf "\e[1;92m[*] Saved:\e[0m\e[1;77m searchdork.txt\e[0m\n"
+
+rm -rf file*
+default_search="Y"
+read -p $'\e[1;92m[*] Search DB Errors on targets? \e[0m\e[1;77m[Y/n]\e[0m' search
+search="${search:-${default_search}}"
+if [[ $search == "y" || $search == "Y" || $search == "Yes" || $search == "yes" ]]; then
+checksqli
+else
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_recherche
+fi
+}
+
+function menu_hydra {
+read -p $'\e[1;77m Target : \e[0m' "target"
+read -p $'\e[1;77m Port : \e[0m' "port"
+read -p $'\e[1;77m User : \e[0m' "user"
+read -p $'\e[1;77m Wordlist path : \e[0m' "wordlist"
+read -p $'\e[1;77m Max concurrent connection: \e[0m' "connection"
+read -p $'\e[1;77m Protocol : \e[0m' "protocol"
+hydra -s $port  -l $user -P $wordlist $target -t $connection -V $protocol 
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+}
+
+
+
+
+function menu_spidershell {
+trap 'printf "\e[1;77m \n Ctrl+C was pressed, exiting...\n\n \e[0m"; rm -rf spider.url*; exit 0' 2
+counter=0
+turn=0
+default_crawl="0"
+default_threads="10"
+
+read -p $'\e[1;77mSite to start spider: \e[0m' site
+read -p $'\e[1;77mCrawl Depth (Default '$default_crawl'): ' crawl
+crawl="${crawl:-${default_crawl}}"
+read -p $'\e[1;77mThreads (Default '$default_threads'): ' threads
+threads="${threads:-${default_threads}}"
+
+printf "\e[101m[*] Spider Shell is \e[5mrunning\e[25m, please wait... \e[0m \n"
+start="$(date -u +%s)"
+wget --no-check-certificate -q $site -O - | tr "\t\r\n'" '   "' | grep -i -o '<a[^>]\+href[ ]*=[ \t]*"\(ht\|f\)tps\?:[^"]\+"' | sed -e 's/^.*"\([^"]\+\)".*$/\1/g' > spider.url.$turn
+let counter++
+
+function spider() {
+let turn++
+cat spider.url.$((turn-1)) | xargs -P $threads -I % wget --no-check-certificate -q % -O - | tr "\t\r\n'" '   "' | grep -i -o '<a[^>]\+href[ ]*=[ \t]*"\(ht\|f\)tps\?:[^"]\+"' | sed -e 's/^.*"\([^"]\+\)".*$/\1/g' >> spider.url.$turn
+}
+while [[ "$crawl" -gt "$counter" ]]; do
+  spider
+  let counter++
+done
+end="$(date -u +%s)"
+duration="$(($end-$start))"
+cat spider.url* | uniq > urlfound.txt
+rm -rf spider.url*
+printf "\e[1;77m\nLinks found: $(wc -l urlfound.txt | tr -cd [:digit:]) \e[0m \n" 
+printf "\e[1;77mSaved on: urlfound.txt \e[0m \n"
+printf "\e[1;77mTime Elapsed: $duration seconds \e[0m \n"
+for i in *.txt ; do
+   (mv $i /home/user/security4u/$projet 2>/dev/null)
+done
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_reconnaissance
+}
+
+
+function menu_mitre {
+printf "\n"
+printf "\e[1;1m  :: Matrix Mitre Attck :: \e[0m\n"
+printf "\n"
+
+cat <<-EOF
+
+${RED}[${WHITE}01${RED}]${ORANGE} Reconnaissance    			
+${RED}[${WHITE}02${RED}]${ORANGE} Resource Development 
+${RED}[${WHITE}03${RED}]${ORANGE} Initial Access
+${RED}[${WHITE}04${RED}]${ORANGE} Execution		
+${RED}[${WHITE}05${RED}]${ORANGE} Persistence		
+${RED}[${WHITE}06${RED}]${ORANGE} Privilege Escalation
+${RED}[${WHITE}07${RED}]${ORANGE} Defense Evasion 				
+${RED}[${WHITE}08${RED}]${ORANGE} Credential Access	
+${RED}[${WHITE}09${RED}]${ORANGE} Discovery		
+${RED}[${WHITE}10${RED}]${ORANGE} Lateral Movement 
+${RED}[${WHITE}11${RED}]${ORANGE} Collection		
+${RED}[${WHITE}12${RED}]${ORANGE} Command and Control	
+${RED}[${WHITE}13${RED}]${ORANGE} Exfiltration 
+${RED}[${WHITE}14${RED}]${ORANGE} Impact	
+		
+	EOF
+
+read -p $'\e[1;1m[*] Choose a Mitre Tactique:\e[0m\e[1;1m ' option
+if [[ $option == 1 || $option == 01 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0043/
+elif [[ $option == 2 || $option == 02 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0042/
+elif [[ $option == 3 || $option == 03 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0001
+elif [[ $option == 4 || $option == 04 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0002
+elif [[ $option == 5 || $option == 05 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0003
+elif [[ $option == 6 || $option == 06 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0004
+elif [[ $option == 7 || $option == 07 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0005
+elif [[ $option == 8 || $option == 08 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0006
+elif [[ $option == 9 || $option == 09 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0007
+elif [[ $option == 10 || $option == 10 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0008
+elif [[ $option == 11 || $option == 11 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0009
+elif [[ $option == 12 || $option == 12 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0011
+elif [[ $option == 13 || $option == 13 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0010
+elif [[ $option == 14 || $option == 14 ]]; then
+	firefox https://attack.mitre.org/tactics/TA0040
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 3
+menu_recherche
+fi 
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_recherche
+}
+
+function menu_mailcheck {
+read -p $'\e[1;92m[*] Check e-mail: \e[0m' email
+checkmail=$(curl -s https://api.2ip.me/email.txt?email=$email | grep -o 'true\|false')
+if [[ $checkmail == 'true' ]]; then
+printf "\e[1;92m[*] Valid e-mail!\e[0m\n"
+elif [[ $checkmail == 'false' ]]; then
+printf "\e[1;93m[!] Invalid e-mail!\e[0m\n"
+fi
+sleep 0.5
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_reconnaissance
+}
+
+
+function menu_myinfo {
+touch myinfo && echo "" > myinfo
+curl "ifconfig.me/all" -s  > myinfo
+
+my_ip=$(grep -o 'ip_addr:.*' myinfo | cut -d " " -f2)
+remote_ip=$(grep -o 'remote_host:.*' myinfo | cut -d " " -f2)
+printf "\e[1;92m[*] My ip:\e[0m\e[1;77m %s\e[0m\n" $my_ip
+printf "\e[1;92m[*] Remote Host:\e[0m\e[1;77m %s\e[0m\n" $remote_ip
+rm -rf myinfo
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_choix1
+}
+
+
+function menu_dnsdump {
+read -p $'\e[1;1m[*] Target :\e[0m\e[1;1m ' target
+cd /home/user/security4u/tools/reconnaissance
+python3 dnsdump.py "$target"
+for i in *.png ; do
+   mv $i /home/user/security4u/$projet
+done
+sleep 0.5
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_reconnaissance
+}
+
+
+function menu_phone {
+if [[ -e phoneinfo.txt ]]; then
+rm -rf phoneinfo.txt
+fi
+
+read -p $'\e[1;92m[*] Phone (e.g.: 14158586273): \e[0m' phone
+
+getphone=$(curl -s "https://api.apilayer.com/number_verification/validate?number=%27$phone'" --header 'apikey: IHbL8IaBmDyoDYae8dTP9qOIQjdPs7ci' -L > "phoneinfo.txt")
+printf "\e[1;93m[!] Save in your projet !\e[0m\n"
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_reconnaissance
+}
+
+function menu_install {
+printf "\e[101m[*] Installation is \e[5mrunning\e[25m, please wait... \e[0m \n"
+apt install python3 2>/dev/null
+apt install python3-pip 2>/dev/null
+apt install theharvester 2>/dev/null
+apt install nmap 2>/dev/null
+apt install sqlmap 2>/dev/null
+apt install cowpatty 2>/dev/null
+apt install lighttpd 2>/dev/null
+apt install mdk4 2>/dev/null
+apt install mdk3 2>/dev/null
+apt install Hydra 2>/dev/null
+apt install dhcpd 2>/dev/null
+apt install xterm 2>/dev/null
+apt install tor 2>/dev/null
+apt install gobuster 2>/dev/null
+apt install php-cgi 2>/dev/null
+apt install hostapd 2>/dev/null
+apt install dsniff 2>/dev/null
+apt install bc 2>/dev/null
+pip install apt-transport-https dirmngr gnupg ca-certificates 2>/dev/null
+apt install mono-devel 2>/dev/null
+apt -y install exploitdb 2>/dev/null
+apt install johntheripper 2>/dev/null
+pip install taser 2>/dev/null
+pip install selenium_stealth 2>/dev/null 
+pip install mcs 2>/dev/null
+pip install dnspython 2>/dev/null
+pip install requests 2>/dev/null
+pip install requests_futures 2>/dev/null
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_choix1
+}
+
+function menu_blockco {
+clear
+printf "\e[1;31m[\e[0m\e[1;1m01\e[0m\e[1;31m]\e[0m\e[1;34m Start\e[0m\n"
+printf "\e[1;31m[\e[0m\e[1;1m02\e[0m\e[1;31m]\e[0m\e[1;34m Stop\e[0m\n"
+printf "\n"
+printf "\e[1;1m[\e[0m\e[1;1m99\e[0m\e[1;1m]\e[0m\e[1;1m Back\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option_multi
+if [[ $option_multi == 1 || $option_multi == 01 ]]; then
+cd /home/user/security4u/tools/cleanup/tor/blocktor
+./blocktor.sh --start 
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+elif [[ $option_multi == 2 || $option_multi == 02 ]]; then
+cd /home/user/security4u/tools/cleanup/tor/blocktor
+./blocktor.sh --stop
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+elif [[ $option_multi == 99 ]]; then
+clear
+menu
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 0.5
+clear
+menu_tor
+fi
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cleanup
+}
+
+
+function menu_nmap {
+read -p $'\e[1;1m Choose an target:\e[0m\e[1;1m ' target
+printf "\n"
+printf "\e[1;1m  :: Choose your nmap strategy :: \e[0m\n"
+printf "\n"
+
+cat <<-EOF
+
+${RED}[${WHITE}01${RED}]${ORANGE} Intense Scan     			${RED}[${WHITE}14${RED}]${ORANGE} Version Detect
+${RED}[${WHITE}02${RED}]${ORANGE} Intense Scan, plus UDP     	${RED}[${WHITE}15${RED}]${ORANGE} Full Port Scan (TCP)
+${RED}[${WHITE}03${RED}]${ORANGE} Intense Scan, all TCP ports	${RED}[${WHITE}16${RED}]${ORANGE} Full Port Scan (UDP/Very Slow)
+${RED}[${WHITE}04${RED}]${ORANGE} Intense Scan, no ping 		${RED}[${WHITE}17${RED}]${ORANGE} Most Common Ports (TCP)
+${RED}[${WHITE}05${RED}]${ORANGE} Ping scan    			${RED}[${WHITE}18${RED}]${ORANGE} Most Common Ports (UDP)
+${RED}[${WHITE}06${RED}]${ORANGE} Quick Scan  			${RED}[${WHITE}19${RED}]${ORANGE} Faster Regular Scan
+${RED}[${WHITE}07${RED}]${ORANGE} Quick Scan        					
+${RED}[${WHITE}08${RED}]${ORANGE} Quick traceroute   		
+${RED}[${WHITE}09${RED}]${ORANGE} Regular Scan   			
+${RED}[${WHITE}10${RED}]${ORANGE} Slow comprehensive scan   		
+${RED}[${WHITE}11${RED}]${ORANGE} Detect Service Version    		
+${RED}[${WHITE}12${RED}]${ORANGE} Operating System Scan			
+${RED}[${WHITE}13${RED}]${ORANGE} OS and Service Detect		
+		
+	EOF
+
+
+read -p $'\e[1;1m[*] Choose an nmap strategie:\e[0m\e[1;1m ' option
+
+if [[ $option == 1 ]]; then
+	nmap -v -T4 -A -v -oX /home/user/security4u/$projet/NMAP-Intense-Scan.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Intense-Scan.xml -o /home/user/security4u/$projet/NMAP-Intense-Scan.html	
+	
+elif [[ $option == 2 ]]; then
+	nmap -v -sS -sU -T4 -A -v -oX /home/user/security4u/$projet/NMAP-Intense-Scan-Plus-UDP.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Intense-Scan-Plus-UDP.xml -o /home/user/security4u/$projet/NMAP-Intense-Scan-Plus-UDP.html	
+	
+elif [[ $option == 3 ]]; then
+	nmap -v -p 1-65535 -T4 -A -v -oX /home/user/security4u/$projet/NMAP-Intense-Scan-all-TCP-port.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Intense-Scan-all-TCP-port.xml -o /home/user/security4u/$projet/NMAP-Intense-Scan-all-TCP-port.html	
+	
+elif [[ $option == 4 ]]; then
+	nmap -v -T4 -A -v -Pn -oX /home/user/security4u/$projet/NMAP-Intense-Scan-no-ping.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Intense-Scan-no-ping.xml -o /home/user/security4u/$projet/NMAP-Intense-Scan-no-ping.html	
+	
+elif [[ $option == 5 ]]; then
+	nmap -v -sn -oX /home/user/security4u/$projet/NMAP-Ping-scan.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Ping-scan.xml -o /home/user/security4u/$projet/NMAP-Ping-scan.html	
+	
+elif [[ $option == 6 ]]; then
+	nmap -v -T4 -F -oX /home/user/security4u/$projet/NMAP-Quick-Scan.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Quick-Scan.xml -o /home/user/security4u/$projet/NMAP-Quick-Scan.html	
+	
+elif [[ $option == 7 ]]; then
+	nmap -v -v -sV -T4 -O -F --version-light -oX /home/user/security4u/$projet/NMAP-Quick-Scan-Plus.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Quick-Scan-Plus.xml -o /home/user/security4u/$projet/NMAP-Quick-Scan-Plus.html
+	
+elif [[ $option == 8 ]]; then
+	nmap -v -sn --traceroute -oX /home/user/security4u/$projet/NMAP-Quick-traceroute.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Quick-traceroute.xml -o /home/user/security4u/$projet/NMAP-Quick-traceroute.html	
+	
+elif [[ $option == 9 ]]; then
+	nmap -v -oX /home/user/security4u/$projet/NMAP-Regular-Scan.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Regular-Scan.xml -o /home/user/security4u/$projet/NMAP-Regular-Scan.html	
+	
+elif [[ $option == 10 ]]; then
+	nmap -v -sS -sU -T4 -A -v -PE -PP -PS80,443 -PA3389 -PU40125 -PY -g 53 --script "default or (discovery and safe)" -oX /home/user/security4u/$projet/NMAP-Slow-comprehensive-scan.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Slow-comprehensive-scan.xml -o /home/user/security4u/$projet/NMAP-Slow-comprehensive-scan.html	
+	
+elif [[ $option == 11 ]]; then
+	nmap -v -sV -T4 -Pn -oG ServiceDetect  -oX /home/user/security4u/$projet/NMAP-Detect-Service-Version.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Detect-Service-Version.xml -o /home/user/security4u/$projet/NMAP-Detect-Service-Version.html	
+	
+elif [[ $option == 12 ]]; then
+	nmap -v -O -T4 -Pn -oG OSDetect  -oX /home/user/security4u/$projet/NMAP-Operating-System-Scan.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Operating-System-Scan.xml -o /home/user/security4u/$projet/NMAP-Operating-System-Scan.html	
+	
+elif [[ $option == 13 ]]; then
+	nmap -v -O -sV -T4 -Pn -p U:53,111,137,T:21-25,80,139,8080 -oG OS_Service_detect  -oX /home/user/security4u/$projet/NMAP-OS-and-Service-Detect.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-OS-and-Service-Detect.xml -o /home/user/security4u/$projet/NMAP-OS-and-Service-Detect.html	
+	
+elif  [[ $option == 14 ]]; then
+	nmap -v -sS -sV -T5 -F -A -O -oX /home/user/security4u/$projet/NMAP-Version-Detect.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Version-Detect.xml -o /home/user/security4u/$projet/NMAP-Version-Detect.html	
+	
+elif  [[ $option == 15 ]]; then
+	nmap -v -sS -T4 -Pn -p 0-65535 -oN FullTCP  -oX /home/user/security4u/$projet/NMAP-Full-Port-Scan-TCP.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Full-Port-Scan-TCP.xml -o /home/user/security4u/$projet/NMAP-Full-Port-Scan-TCP.html	
+	
+elif  [[ $option == 16 ]]; then
+	nmap -v -sU -T4 -Pn -p 0-65535 -oN FullUDP  -oX /home/user/security4u/$projet/NMAP-Full-Port-Scan-UDP/Very-Slow.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Full-Port-Scan-UDP/Very-Slow.xml -o /home/user/security4u/$projet/NMAP-Full-Port-Scan-UDP/Very-Slow.html	
+	
+elif [[ $option == 17 ]]; then
+	nmap -v -sS -T4 -Pn -oG TopTCP  -oX /home/user/security4u/$projet/NMAP-Most-Common-Ports-TCP.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Most-Common-Ports-TCP.xml -o /home/user/security4u/$projet/NMAP-Most-Common-Ports-TCP.html	
+	
+elif [[ $option == 18 ]]; then
+	nmap -v -sS -T4 -Pn -oG TopUDP  -oX /home/user/security4u/$projet/NMAP-Most-Common-Ports-UDP.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Most-Common-Ports-UDP.xml -o /home/user/security4u/$projet/NMAP-Most-Common-Ports-UDP.html	
+	
+elif [[ $option == 19 ]]; then
+	nmap -v -T5 -oX /home/user/security4u/$projet/NMAP-Faster-Regular-Scan.xml $target
+	xsltproc /home/user/security4u/$projet/NMAP-Faster-Regular-Scan.xml -o /home/user/security4u/$projet/NMAP-Faster-Regular-Scan.html	
+else
+    printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+    sleep 1
+menu_cartographie
+fi 
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_cartographie
+}
+
+function menu_john {
+printf "\n"
+printf "\e[1;34m[\e[0m\e[1;1m01\e[0m\e[1;34m]\e[0m\e[1;31m Crack hash password\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option_multi
+printf "\n"
+
+if [[ $option_multi == 1 || $option_multi == 01 ]]; then
+read -p $'\e[1;1m File location :\e[0m\e[1;1m ' target
+read -p $'\e[1;1m Hash type :\e[0m\e[1;1m ' target2
+john --format=$target2 $target
+elif [[ $option_multi == 2 || $option_multi == 02 ]]; then
+john -show passwordfile
+fi
+read -n 1 -s -r -p $' Press key for go back main menu '
+menu_exploitation
+}
+
+
+function menu_choix1 {
+clear
+printf "\e[1;31m  \n"
+printf "	______         _   _____                    	\n"
+printf "	| ___ \       | | |_   _|                   	\n"
+printf "	| |_/ /___  __| |   | | ___  __ _ _ __ ___  	\n"
+printf "	|    // _ \/ _  |   | |/ _ \/ _  |  _   _ \ 	\n"
+printf "	| |\ \  __/ (_| |   | |  __/ (_| | | | | | |	\n"
+printf "	\_| \_\___|\__,_|   \_/\___|\__,_|_| |_| |_|	\n"
+printf "\n"
+printf "          \e[1;31m.:.\e[0m\e[1;34m Coded by\e[0m\e[1;34m  @Ilan_&_Hocine \e[1;31m.:.\e[0m\n"
+printf "\n"                                                                         
+printf "\e[1;34m[\e[0m\e[1;1m01\e[0m\e[1;34m]\e[0m\e[1;31m Reconnaissance\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m02\e[0m\e[1;34m]\e[0m\e[1;31m Cartographie\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m03\e[0m\e[1;34m]\e[0m\e[1;31m Recherche de vulnérabilité\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m04\e[0m\e[1;34m]\e[0m\e[1;31m Exploitation\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m05\e[0m\e[1;34m]\e[0m\e[1;31m CleanUp\e[0m\n"
+printf "\n"
+printf "\e[1;34m[\e[0m\e[1;1m06\e[0m\e[1;34m]\e[0m\e[1;31m Install All Tools\e[0m\n"
+printf "\e[1;34m[\e[0m\e[1;1m07\e[0m\e[1;34m]\e[0m\e[1;31m My info\e[0m\n"
+printf "\n"
+printf "\e[1;36m[\e[0m\e[1;1m99\e[0m\e[1;36m]\e[0m\e[1;31m Back\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option
+
+if [[ $option == 1 || $option == 01 ]]; then
+menu_reconnaissance
+elif [[ $option == 2 || $option == 02 ]]; then
+menu_cartographie
+elif [[ $option == 3 || $option == 03 ]]; then
+menu_recherche
+elif [[ $option == 4 || $option == 04 ]]; then
+menu_exploitation
+elif [[ $option == 5 || $option == 05 ]]; then
+menu_cleanup
+elif [[ $option == 6 || $option == 06 ]]; then
+menu_install
+elif [[ $option == 7 || $option == 07 ]]; then
+menu_myinfo
+elif [[ $option_multi == 99 ]]; then
+clear
+menu_1
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 0.5
+clear
+menu_choix1
+fi
+}
+
+function menu_start {
+if [[ ! -d projet ]]; then 
+	mkdir projet
+fi
+menu_1
+}
+
+function menu_1 {
+clear
+
+printf "\e[1;77m  \n"
+printf "	  _____                      _ _           _  _		\n"
+printf " 	 / ____|                    (_) |         | || |         \n"
+printf "   	| (___   ___  ___ _   _ _ __ _| |_ _   _  | || |_   _   _\n"
+printf "   	 \___ \ / _ \/ __| | | | '__| | __| | | |  __   _  | | | |\n"
+printf "   	 ____) |  __/ (__| |_| | |  | | |_| |_| |    | |   | |_| |\n"
+printf "   	|_____/ \___|\___|\__,_|_|  |_|\__|\__, |    |_|    \__,_|\n"
+printf "					      / | 		\n"
+printf "				       	   |___/	\n"
+printf "            	   \e[1;31m.:.\e[0m\e[1;34m Coded by\e[0m\e[1;34m  @Ilan_&_Hocine \e[1;31m.:.\e[0m\n"
+printf "\n"  
+printf "\e[1;31m.:.\e[0m\e[1;34m This tool is only for educational purposes only.\e[1;31m.:.\e[0m\n"
+printf "\e[1;31m.:.\e[0m\e[1;34m Use this tool only on your own network and never without permission\e[1;31m.:.\e[0m\n"
+printf "\e[1;31m.:.\e[0m\e[1;34m I am not responsible for anything you do with this tool\e[1;31m.:.\e[0m\n"
+printf "\n"                                                          
+printf "\e[1;1m[\e[0m\e[1;1m01\e[0m\e[1;1m]\e[0m\e[1;1m Create projet \e[0m\n"
+printf "\e[1;1m[\e[0m\e[1;1m02\e[0m\e[1;1m]\e[0m\e[1;1m Continue projet \e[0m\n"
+printf "\n"
+printf "\e[1;1m[\e[0m\e[1;1m99\e[0m\e[1;1m]\e[0m\e[1;1m Exit\e[0m\n"
+printf "\n"
+read -p $'\e[1;1m[*] Choose an option:\e[0m\e[1;1m ' option
+
+if [[ $option == 1 ]]; then 
+printf "\n"
+read -p $'\e[1;1m[*] Name of projet :\e[0m\e[1;1m ' "projet_name"
+projet="projet/"$projet_name
+if [[ -d $projet ]]; then
+	printf "\n"
+	printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Projet already exist !\e[0m"
+	printf "\n"
+	printf "\n"
+	read -p $'\e[1;1m[*] Name of projet :\e[0m\e[1;1m ' "projet_name"
+	printf "\n"
+	printf "\n"
+	projet="projet/"$projet_name
+fi
+mkdir $projet
+cd $projet
+menu_choix1
+elif [[ $option == 2 ]]; then 
+printf "\n"
+printf "\e[1;1m[\e[1;1m!\e[0m\e[1;1m] There projets !\e[0m"
+printf "\n"
+printf "\n"
+ls projet 
+printf "\n"
+read -p $'\e[1;1m[*] Name of projet :\e[0m\e[1;1m ' "projet_name2"
+projet="projet/"$projet_name2
+if [[ ! -d $projet ]]; then 
+	printf "\n"
+	printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Projet didn't exist, Please Create !\e[0m"
+	printf "\n"
+	printf "\n"
+	read -p $'\e[1;1m[*] Name of projet to create :\e[0m\e[1;1m ' "projet_name2"
+	printf "\n"
+	printf "\n"
+	projet="projet/"$projet_name2
+fi
+mkdir $projet
+cd $projet
+menu_choix1
+elif [[ $option == 99 ]]; then
+clear
+exit 1
+else
+printf "\e[1;93m[\e[1;77m!\e[0m\e[1;93m] Invalid option!\e[0m"
+sleep 0.5
+clear
+menu_1
+fi
+}
+menu_start
